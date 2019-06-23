@@ -26,22 +26,20 @@ class HomePage extends StatelessWidget {
   final todoList = TodoList();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('MobX Fun')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ButtonNavigator(
-                name: 'Counter', builder: (_) => Provider(value: counter, child: CounterPage())),
-            ButtonNavigator(
-                name: 'Todo', builder: (_) => Provider(value: todoList, child: TodoExample())),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text('MobX Fun')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ButtonNavigator(
+                  name: 'Counter', builder: (_) => Provider(value: counter, child: CounterPage())),
+              ButtonNavigator(
+                  name: 'Todo', builder: (_) => Provider(value: todoList, child: TodoExample())),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class ButtonNavigator extends StatelessWidget {

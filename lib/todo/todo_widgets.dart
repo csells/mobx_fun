@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx_fun/todo/todo.dart';
 import '../mobx_provider_consumer.dart';
 import 'todo_list.dart';
@@ -30,31 +29,28 @@ class TodoListView extends StatelessWidget {
         builder: (_, list) => Flexible(
               child: ListView.builder(
                 itemCount: list.visibleTodos.length,
-                itemBuilder: (_, index) {
-                  // TODO: replace this w/ provider + consumer?
-                  final todo = list.visibleTodos[index];
-                  return Observer(
-                    builder: (_) => CheckboxListTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          value: todo.done,
-                          onChanged: (done) => todo.done = done,
-                          title: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  todo.description,
-                                  overflow: TextOverflow.ellipsis,
+                itemBuilder: (_, index) => Prosumer<Todo>(
+                      list.visibleTodos[index],
+                      builder: (_, todo) => CheckboxListTile(
+                            controlAffinity: ListTileControlAffinity.leading,
+                            value: todo.done,
+                            onChanged: (done) => todo.done = done,
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    todo.description,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () => list.todos.remove(todo),
-                              ),
-                            ],
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () => list.todos.remove(todo),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                  );
-                },
+                    ),
               ),
             ),
       );
@@ -88,7 +84,7 @@ class ActionBar extends StatelessWidget {
                   ],
                 ),
                 ButtonBar(
-                  children: <Widget>[
+                  children: [
                     RaisedButton(
                       child: Text('Remove Completed'),
                       onPressed: list.canRemoveAllCompleted ? list.removeCompleted : null,

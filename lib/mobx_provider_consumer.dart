@@ -36,3 +36,13 @@ class Consumer<T> extends StatelessWidget {
         builder: (context) => _builder(context, Provider.of<T>(context)),
       );
 }
+
+class Prosumer<T> extends StatelessWidget {
+  final T _value;
+  final ConsumerWidgetBuilder<T> _builder;
+  Prosumer(this._value, {@required ConsumerWidgetBuilder<T> builder}) : _builder = builder;
+
+  @override
+  Widget build(BuildContext context) =>
+      Provider(value: _value, child: Consumer<T>(builder: _builder));
+}
