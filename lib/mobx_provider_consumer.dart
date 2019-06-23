@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-// TODO: make this keep values between hot reloads?
 class Provider<T> extends InheritedWidget {
   final T _value;
   Provider({
