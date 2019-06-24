@@ -1,10 +1,18 @@
 import 'package:mobx/mobx.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'todo.dart';
 part 'todo_list.g.dart';
 
 enum VisibilityFilter { all, pending, completed }
 
-class TodoList = _TodoList with _$TodoList;
+// from https://github.com/mobxjs/mobx.dart/issues/147
+// TODO: make this work; it chokes on the ObserverableList
+//@JsonSerializable()
+class TodoList extends _TodoList with _$TodoList {
+  TodoList();
+  // factory TodoList.fromJson(Map<String, dynamic> json) => _$TodoListFromJson(json);
+  // Map<String, dynamic> toJson() => _$TodoListToJson(this);
+}
 
 abstract class _TodoList with Store {
   @observable

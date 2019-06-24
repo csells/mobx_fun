@@ -11,12 +11,14 @@ dependencies:
   cupertino_icons: ^0.1.2
   mobx:
   flutter_mobx:
+  json_annotation:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
   mobx_codegen:
+  json_serializable:
 
 flutter:
   uses-material-design: true
