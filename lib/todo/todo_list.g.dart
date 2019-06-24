@@ -74,6 +74,22 @@ mixin _$TodoList on _TodoList, Store {
     _$todosAtom.reportChanged();
   }
 
+  final _$editingAtom = Atom(name: '_TodoList.editing');
+
+  @override
+  Todo get editing {
+    _$editingAtom.context.enforceReadPolicy(_$editingAtom);
+    _$editingAtom.reportObserved();
+    return super.editing;
+  }
+
+  @override
+  set editing(Todo value) {
+    _$editingAtom.context.enforceWritePolicy(_$editingAtom);
+    super.editing = value;
+    _$editingAtom.reportChanged();
+  }
+
   final _$filterAtom = Atom(name: '_TodoList.filter');
 
   @override

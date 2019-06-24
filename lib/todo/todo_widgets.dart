@@ -35,20 +35,8 @@ class TodoListView extends StatelessWidget {
                             controlAffinity: ListTileControlAffinity.leading,
                             value: todo.done,
                             onChanged: (done) => todo.done = done,
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    todo.description,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () => list.todos.remove(todo),
-                                ),
-                              ],
-                            ),
+                            title:
+                                todo == list.editing ? EditTodo(list, todo) : ShowTodo(list, todo),
                           ),
                     ),
               ),
@@ -115,5 +103,58 @@ class AddTodo extends StatelessWidget {
                 _textController.clear();
               },
             ),
+      );
+}
+
+class ShowTodo extends StatelessWidget {
+  final TodoList _list;
+  final Todo _todo;
+  ShowTodo(this._list, this._todo);
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          Expanded(child: Text(_todo.description, overflow: TextOverflow.ellipsis)),
+          IconButton(icon: Icon(Icons.edit), onPressed: () => _list.editing = _todo),
+          IconButton(icon: Icon(Icons.delete), onPressed: () => _list.todos.remove(_todo)),
+        ],
+      );
+}
+
+class EditTodo extends StatelessWidget {
+  final TodoList _list;
+  final Todo _todo;
+  final _textController;
+  EditTodo(this._list, this._todo)
+      : _textController = TextEditingController(text: _todo.description)
+          ..selection = TextSelection.collapsed(offset: _todo.description.length);
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          Expanded(
+            child: TextField(
+                autofocus: true,
+                decoration:
+                    InputDecoration(labelText: 'Edit Todo', contentPadding: EdgeInsets.all(8)),
+                controller: _textController,
+                onSubmitted: (value) {
+                  _todo.description = value;
+                  _list.editing = null;
+                }),
+          ),
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () {
+              _todo.description = _textController.text;
+              _list.editing = null;
+            },
+          ),
+          IconButton(
+              icon: Icon(Icons.cancel),
+              onPressed: () {
+                _list.editing = null;
+              }),
+        ],
       );
 }

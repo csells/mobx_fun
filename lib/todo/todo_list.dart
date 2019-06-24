@@ -11,6 +11,9 @@ abstract class _TodoList with Store {
   ObservableList<Todo> todos = ObservableList<Todo>();
 
   @observable
+  Todo editing; // the Todo item currently being edited
+
+  @observable
   VisibilityFilter filter = VisibilityFilter.all;
 
   @computed
