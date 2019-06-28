@@ -6,17 +6,24 @@ part 'todo_list.g.dart';
 enum VisibilityFilter { all, pending, completed }
 
 // from https://github.com/mobxjs/mobx.dart/issues/147
-// TODO: make this work; it chokes on the ObserverableList
-//@JsonSerializable()
+@JsonSerializable()
 class TodoList extends _TodoList with _$TodoList {
   TodoList();
-  // factory TodoList.fromJson(Map<String, dynamic> json) => _$TodoListFromJson(json);
-  // Map<String, dynamic> toJson() => _$TodoListToJson(this);
+  factory TodoList.fromJson(Map<String, dynamic> json) => _$TodoListFromJson(json);
+  Map<String, dynamic> toJson() => _$TodoListToJson(this);
+}
+
+// ignore: camel_case_types
+class ObservableList_Todo extends ObservableList<Todo> {
+  ObservableList_Todo();
+  factory ObservableList_Todo.fromJson(List<dynamic> json) =>
+      ObservableList_Todo()..addAll(json.map((t) => Todo.fromJson(t)));
+  List<dynamic> toJson() => map((t) => t.toJson()).toList();
 }
 
 abstract class _TodoList with Store {
   @observable
-  ObservableList<Todo> todos = ObservableList<Todo>();
+  ObservableList_Todo todos = ObservableList_Todo();
 
   @observable
   Todo editing; // the Todo item currently being edited

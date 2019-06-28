@@ -1,5 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
 import 'mobx_provider_consumer.dart';
 import 'counter/counter_page.dart';
 import 'todo/todo_list.dart';
@@ -8,22 +10,63 @@ import 'todo/todo_widgets.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  MyApp() {
-    // allow @observable setters to run
-    mainContext.config = ReactiveConfig.main.clone(writePolicy: ReactiveWritePolicy.never);
-  }
-
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: 'MobX',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Colors.red),
         home: HomePage(),
       );
 }
 
-class HomePage extends StatelessWidget {
-  final counter = Observable(0);
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final counter = Counter();
   final todoList = TodoList();
+
+  Future<File> get _jsonFile async {
+    var directory = await getApplicationDocumentsDirectory();
+    return File('${directory.path}/todos.json');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTodos();
+  }
+
+  // load TodoList from disk
+  void _loadTodos() async {
+    var file = await _jsonFile;
+    if (!await file.exists()) return;
+
+    try {
+      var json = await file.readAsString();
+      todoList.todos = ObservableList_Todo.fromJson(jsonDecode(json));
+    } catch (err) {
+      print('couldn\'t load from file ${file.path}: $err');
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _saveTodos();
+  }
+
+  // save TodoList to disk
+  void _saveTodos() async {
+    var file = await _jsonFile;
+    try {
+      var json = jsonEncode(todoList.todos);
+      await file.writeAsString(json);
+    } catch (err) {
+      print('couldn\'t save to file ${file.path}: $err');
+    }
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

@@ -3,6 +3,53 @@
 part of 'todo_list.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+TodoList _$TodoListFromJson(Map<String, dynamic> json) {
+  return TodoList()
+    ..todos = json['todos'] == null
+        ? null
+        : ObservableList_Todo.fromJson(json['todos'] as List)
+    ..editing = json['editing'] == null
+        ? null
+        : Todo.fromJson(json['editing'] as Map<String, dynamic>)
+    ..filter = _$enumDecodeNullable(_$VisibilityFilterEnumMap, json['filter']);
+}
+
+Map<String, dynamic> _$TodoListToJson(TodoList instance) => <String, dynamic>{
+      'todos': instance.todos,
+      'editing': instance.editing,
+      'filter': _$VisibilityFilterEnumMap[instance.filter]
+    };
+
+T _$enumDecode<T>(Map<T, dynamic> enumValues, dynamic source) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return enumValues.entries
+      .singleWhere((e) => e.value == source,
+          orElse: () => throw ArgumentError(
+              '`$source` is not one of the supported values: '
+              '${enumValues.values.join(', ')}'))
+      .key;
+}
+
+T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source);
+}
+
+const _$VisibilityFilterEnumMap = <VisibilityFilter, dynamic>{
+  VisibilityFilter.all: 'all',
+  VisibilityFilter.pending: 'pending',
+  VisibilityFilter.completed: 'completed'
+};
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 
@@ -61,17 +108,18 @@ mixin _$TodoList on _TodoList, Store {
   final _$todosAtom = Atom(name: '_TodoList.todos');
 
   @override
-  ObservableList<Todo> get todos {
+  ObservableList_Todo get todos {
     _$todosAtom.context.enforceReadPolicy(_$todosAtom);
     _$todosAtom.reportObserved();
     return super.todos;
   }
 
   @override
-  set todos(ObservableList<Todo> value) {
-    _$todosAtom.context.enforceWritePolicy(_$todosAtom);
-    super.todos = value;
-    _$todosAtom.reportChanged();
+  set todos(ObservableList_Todo value) {
+    _$todosAtom.context.conditionallyRunInAction(() {
+      super.todos = value;
+      _$todosAtom.reportChanged();
+    }, _$todosAtom, name: '${_$todosAtom.name}_set');
   }
 
   final _$editingAtom = Atom(name: '_TodoList.editing');
@@ -85,9 +133,10 @@ mixin _$TodoList on _TodoList, Store {
 
   @override
   set editing(Todo value) {
-    _$editingAtom.context.enforceWritePolicy(_$editingAtom);
-    super.editing = value;
-    _$editingAtom.reportChanged();
+    _$editingAtom.context.conditionallyRunInAction(() {
+      super.editing = value;
+      _$editingAtom.reportChanged();
+    }, _$editingAtom, name: '${_$editingAtom.name}_set');
   }
 
   final _$filterAtom = Atom(name: '_TodoList.filter');
@@ -101,9 +150,10 @@ mixin _$TodoList on _TodoList, Store {
 
   @override
   set filter(VisibilityFilter value) {
-    _$filterAtom.context.enforceWritePolicy(_$filterAtom);
-    super.filter = value;
-    _$filterAtom.reportChanged();
+    _$filterAtom.context.conditionallyRunInAction(() {
+      super.filter = value;
+      _$filterAtom.reportChanged();
+    }, _$filterAtom, name: '${_$filterAtom.name}_set');
   }
 
   final _$_TodoListActionController = ActionController(name: '_TodoList');

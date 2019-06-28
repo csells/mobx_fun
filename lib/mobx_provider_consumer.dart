@@ -14,8 +14,11 @@ class Provider<T> extends InheritedWidget {
   // from https://stackoverflow.com/questions/52891537/how-to-get-generic-type
   // and https://github.com/dart-lang/sdk/issues/11923.
   static Type _typeOf<T>() => T;
-  static T of<T>(BuildContext context) =>
-      ((context.inheritFromWidgetOfExactType(_typeOf<Provider<T>>())) as Provider<T>)._value;
+  static T of<T>(BuildContext context) {
+    var provider = context.inheritFromWidgetOfExactType(_typeOf<Provider<T>>());
+    if (provider == null) throw Exception('Provider<${_typeOf<T>().toString()}> not found');
+    return (provider as Provider<T>)._value;
+  }
 
   @override
   bool updateShouldNotify(Provider<T> oldWidget) => oldWidget._value != _value;

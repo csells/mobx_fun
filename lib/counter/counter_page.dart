@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import '../mobx_provider_consumer.dart';
+part 'counter_page.g.dart';
+
+class Counter extends _Counter with _$Counter {}
+
+abstract class _Counter with Store {
+  @observable
+  int value = 0;
+}
 
 class CounterPage extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Consumer<Observable<int>>(
+  Widget build(BuildContext context) => Consumer<Counter>(
         builder: (_, counter) => Scaffold(
               appBar: AppBar(title: Text('MobX Counter')),
               body: Center(

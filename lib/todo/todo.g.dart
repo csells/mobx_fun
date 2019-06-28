@@ -35,9 +35,10 @@ mixin _$Todo on _Todo, Store {
 
   @override
   set description(String value) {
-    _$descriptionAtom.context.enforceWritePolicy(_$descriptionAtom);
-    super.description = value;
-    _$descriptionAtom.reportChanged();
+    _$descriptionAtom.context.conditionallyRunInAction(() {
+      super.description = value;
+      _$descriptionAtom.reportChanged();
+    }, _$descriptionAtom, name: '${_$descriptionAtom.name}_set');
   }
 
   final _$doneAtom = Atom(name: '_Todo.done');
@@ -51,8 +52,9 @@ mixin _$Todo on _Todo, Store {
 
   @override
   set done(bool value) {
-    _$doneAtom.context.enforceWritePolicy(_$doneAtom);
-    super.done = value;
-    _$doneAtom.reportChanged();
+    _$doneAtom.context.conditionallyRunInAction(() {
+      super.done = value;
+      _$doneAtom.reportChanged();
+    }, _$doneAtom, name: '${_$doneAtom.name}_set');
   }
 }
