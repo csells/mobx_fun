@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'mobx_provider_consumer.dart';
@@ -24,7 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final counter = Counter();
+  final counter = Observable<int>(0);
   final todoList = TodoList();
 
   Future<File> get _jsonFile async {
