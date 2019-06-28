@@ -1,49 +1,5 @@
 # mobx_fun
-This project is just me playing around with [mobX for Flutter](https://pub.dev/packages/flutter_mobx). I flipped a run-time setting, implemented a simple provider/consumer and reimplemented some of the samples from [mobx.pub](https://mobx.pub). Mostly this is to see how far I can push the usability of mobx, because in general it's PFM!
-
-## Allowing @observerable properties to mutate
-To start, I flip the ReactiveWritePolicy policy when the app is created:
-
-```dart
-MyApp() {
-  // allow @observable setters to run
-  mainContext.config = ReactiveConfig.main.clone(writePolicy: ReactiveWritePolicy.never);
-}
-```
-
-By default, if something in [the mobx code generator](https://pub.dev/packages/mobx_codegen) sees the setter being called for an @observable, it throws an exception. Honestly, I don't know why that is; purity? I'm not the pure.
-
-By removing this restriction, I can simplify the data types because I no longer need to write setters manually just to mark them as @action. For example, the Todo example class w/ the restriction needs to look like this:
-
-```dart
-abstract class _Todo with Store {
-  @observable
-  String description = '';
-
-  @observable
-  bool done = false;
-
-  // ed: this looks like a setter to me...
-  @action
-  void markDone(bool flag) {
-    done = flag;
-  }
-}
-```
-
-By lifting the restriction, I can simply remove this method and others like it:
-
-```dart
-abstract class _Todo with Store {
-  @observable
-  String description = '';
-
-  @observable
-  bool done = false;
-}
-```
-
-Then, in the client code, I can call ```todo.done = true``` instead of ```todo.markDone()```. Methods are great when they do something besides change a property, but otherwise I prefer setters.
+This project is just me playing around with [mobX for Flutter](https://pub.dev/packages/flutter_mobx). I implemented a simple provider/consumer and reimplemented some of the samples from [mobx.pub](https://mobx.pub). Mostly this is to see how far I can push the usability of mobx, because in general it's PFM!
 
 ## Providers, Consumers and Prosumers, oh my!
 Another thing that [the mobx samples](https://mobx.pub/examples/todos) do is pass around data via global variables or as ctor args, neither are best practices. I'm also a big fan of [Provider](https://pub.dev/packages/provider), which allows you to drop a hunk of data into the tree in one spot and grab it from wherever else you want it. In mobx, there is no such facility; instead you drop an Observer into the tree and if you happen to be using an observable, the right thing happens, but it provides no facility for looking up something further up the tree (not that mobx allows you to put anything into the tree anyway...). So, inspired by Provider, I built a simple Provider/Consumer for mobx.
